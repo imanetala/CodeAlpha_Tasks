@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Mon Panier{% endblock %}
+{% block content %}
+<h2 class="mb-4">Mon Panier</h2>
+{% if items %}
+<table class="table table-bordered bg-white">
+    <thead class="table-dark">
+        <tr>
+            <th>Produit</th>
+            <th>Prix unitaire</th>
+            <th>Quantité</th>
+            <th>Total</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.product.price }} MAD</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.get_total }} MAD</td>
+            <td>
+                <a href="/cart/remove/{{ item.pk }}/" class="btn btn-danger btn-sm">Supprimer</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="text-end">
+    <h4>Total : <strong>{{ total }} MAD</strong></h4>
+    <a href="/orders/create/" class="btn btn-primary btn-lg">Commander</a>
+</div>
+{% else %}
+    <p>Votre panier est vide. <a href="/">Voir les produits</a></p>
+{% endif %}
+{% endblock %}

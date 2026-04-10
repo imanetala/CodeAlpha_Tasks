@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Fil d'actualité{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <!-- Créer un post -->
+        <div class="card p-3 mb-4">
+            <form method="post" action="/post/create/" enctype="multipart/form-data">
+                {% csrf_token %}
+                <textarea name="content" class="form-control mb-2" rows="3" placeholder="Quoi de neuf ?"></textarea>
+                <div class="d-flex justify-content-between align-items-center">
+                    <input type="file" name="image" class="form-control w-50" accept="image/*">
+                    <button type="submit" class="btn btn-primary">Publier</button>
+                </div>
+            </form>
+        </div>
+        <!-- Posts -->
+        {% for post in posts %}
+        <div class="card p-3 mb-3">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <div class="avatar bg-primary d-flex align-items-center justify-content-center text-white">
+                    {{ post.author.username|first|upper }}
+                </div>
+                <div>
+                    <a href="/accounts/profile/{{ post.author.username }}/" class="fw-bold text-decoration-none text-dark">
+                        {{ post.author.username }}
+                    </a>
+                    <small class="text-muted d-block">{{ post.created_at|date:"d/m/Y H:i" }}</small>
+                </div>
+                {% if post.author == user %}
+                <a href="/post/{{ post.pk }}/delete/" class="ms-auto btn btn-sm btn-outline-danger">Supprimer</a>
+                {% endif %}
+            </div>
+            <p>{{ post.content }}</p>
+            {% if post.image %}
+                <img src="{{ post.image.url }}" class="img-fluid rounded mb-2">
+            {% endif %}
+            <div class="d-flex gap-3 align-items-center mb-2">
+                <a href="/post/{{ post.pk }}/like/" class="btn btn-sm btn-outline-danger">
+                    ❤️ {{ post.likes_count }}
+                </a>
+                <span class="text-muted">💬 {{ post.comments.count }} commentaires</span>
+            </div>
+            <!-- Commentaires -->
+            {% for comment in post.comments.all %}
+            <div class="bg-light rounded p-2 mb-1">
+                <strong>{{ comment.author.username }}</strong> : {{ comment.content }}
+                <small class="text-muted">· {{ comment.created_at|date:"d/m/Y" }}</small>
+            </div>
+            {% endfor %}
+            <!-- Ajouter commentaire -->
+            <form method="post" action="/post/{{ post.pk }}/comment/" class="mt-2">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" name="content" class="form-control" placeholder="Ajouter un commentaire...">
+                    <button type="submit" class="btn btn-outline-primary">Envoyer</button>
+                </div>
+            </form>
+        </div>
+        {% empty %}
+            <p class="text-center text-muted">Aucun post pour l'instant. Soyez le premier !</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

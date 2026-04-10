@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Mes Commandes{% endblock %}
+{% block content %}
+<h2 class="mb-4">Mes Commandes</h2>
+{% if orders %}
+<table class="table table-bordered bg-white">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Statut</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+            <td>{{ order.total }} MAD</td>
+            <td>
+                <span class="badge bg-warning">{{ order.get_status_display }}</span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p>Aucune commande pour l'instant. <a href="/">Voir les produits</a></p>
+{% endif %}
+{% endblock %}
