@@ -1,2 +1,1 @@
-# CodeAlpha_SocialMedia
- 
+Task2 SocialMedia 
